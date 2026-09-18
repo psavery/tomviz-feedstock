@@ -26,8 +26,14 @@ outputs:
     build:
       number: {{ build_number }}
       # py310 is skipped: the paraview 6.1.1 py310 osx-64 package is broken
-      # (missing jsoncpp symbol at import time)
-      skip: true  # [py < 311]
+      # (missing jsoncpp symbol at import time).
+      # osx + py3.14 is skipped: conda-forge builds python 3.14 on macOS with
+      # the tail-calling interpreter (clang 20.1), and the app segfaults at
+      # launch in it (a stack reference is returned decremented by one on the
+      # second C-to-Python call; see conda-forge/tomviz-feedstock#110). Linux
+      # and Windows 3.14 are fine. Re-enable when python-feedstock or CPython
+      # ships a fix.
+      skip: true  # [py < 311 or (osx and py == 314)]
     requirements:
       build:
         - {{ compiler('c') }}
