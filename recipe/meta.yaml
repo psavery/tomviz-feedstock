@@ -1,7 +1,7 @@
 {% set name = "tomviz" %}
-{% set version = "3.0.0" %}
+{% set version = "3.1.0.dev0" %}
 {% set paraview_version = "6.1.1" %}
-{% set build_number = 1 %}
+{% set build_number = 0 %}
 
 package:
   name: {{ name|lower }}-split
@@ -9,7 +9,10 @@ package:
 
 source:
   - git_url: https://github.com/OpenChemistry/tomviz
-    git_rev: {{ version }}
+    # TEMPORARY, BEFORE MERGE: build the head of the 3.1 branch so CI verifies
+    # the release candidate on every platform and Python. Once 3.1 is tagged,
+    # set version to the tag and restore `git_rev: {{ version }}`.
+    git_rev: "3.1"
     folder: tomviz
   # Submodules updated in build.sh: pybind11
   # conda-fixes.patch was dropped for 3.0: every hunk is now upstream, or
@@ -71,8 +74,7 @@ outputs:
         - paraview.simple
         - paraview.numpy_support
         - tomviz
-        - tomviz.cli
-        - tomviz._wrapping
+        - tomviz_pipeline
         - tomviz._realtime.ctvlib
       commands:
         - tomviz-pipeline --help
